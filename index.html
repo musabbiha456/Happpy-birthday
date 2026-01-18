@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday Moiz</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family: Arial, sans-serif;
+}
+
+body{
+  background: radial-gradient(circle at top, #0b0005, #000);
+  color:#ffd6e0;
+  overflow:auto;
+}
+
+/* Pages */
+.section{
+  width:100vw;
+  height:100vh;
+  position:absolute;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  text-align:center;
+}
+
+.hidden{display:none;}
+
+h1{
+  font-size:3rem;
+  color:#ff4d6d;
+}
+
+.tap{
+  margin-top:20px;
+  opacity:0.7;
+}
+
+/* Cake */
+#cakeImg{
+  width:300px;
+  cursor:pointer;
+  animation: float 3s ease-in-out infinite;
+  transition:0.4s;
+}
+
+@keyframes float{
+  50%{transform:translateY(-12px);}
+}
+
+.blow{
+  opacity:0.6;
+  transform:scale(0.95);
+}
+
+/* Smoke */
+#smokeContainer{
+  position:absolute;
+  top:35%;
+  display:flex;
+  gap:12px;
+}
+
+.smoke{
+  width:18px;
+  height:18px;
+  background:rgba(255,255,255,0.6);
+  border-radius:50%;
+  animation:smokeUp 1.8s ease-out forwards;
+}
+
+@keyframes smokeUp{
+  to{
+    transform:translateY(-70px) scale(2);
+    opacity:0;
+  }
+}
+
+/* Sweep */
+#sweepText{
+  position:fixed;
+  top:40%;
+  left:-100%;
+  font-size:3.2rem;
+  white-space:nowrap;
+  color:#ff4d6d;
+  animation:sweep 3s ease-out forwards;
+}
+
+@keyframes sweep{
+  to{left:110%;}
+}
+
+/* Typing */
+#typingText{
+  margin-top:120px;
+  font-size:1.2rem;
+  padding:20px;
+  line-height:1.6;
+}
+
+.handwriting{
+  font-family:'Pacifico', cursive;
+  font-size:1.4rem;
+  color:#ffb3c6;
+}
+
+/* Confetti */
+.confetti{
+  position:fixed;
+  width:8px;
+  height:8px;
+  background:#ff4d6d;
+  top:-10px;
+  animation:fall linear infinite;
+}
+
+@keyframes fall{
+  to{transform:translateY(110vh) rotate(360deg);}
+}
+</style>
+</head>
+
+<body>
+
+<audio id="music">
+  <source src="/music.mp3" type="audio/mpeg">
+</audio>
+
+<!-- Page 1 -->
+<div class="section" id="page1">
+  <h1>Finally…</h1>
+  <div class="tap">Tap to begin</div>
+</div>
+
+<!-- Page 2 -->
+<div class="section hidden" id="page2">
+  <img id="cakeImg" src="/cake.png">
+  <div id="smokeContainer"></div>
+  <div class="tap">Tap to blow candles 🎂</div>
+</div>
+
+<!-- Page 3 -->
+<div class="section hidden" id="page3">
+  <h1 id="sweepText">Happy Birthday Moiz 🎉</h1>
+</div>
+
+<!-- Page 4 -->
+<div class="section hidden" id="page4">
+  <p id="typingText"></p>
+</div>
+
+<script>
+let step=0;
+let musicStarted=false;
+let candlesBlown=false;
+
+const pages=[page1,page2,page3,page4];
+
+document.body.addEventListener("click",()=>{
+  if(!musicStarted){
+    music.play();
+    musicStarted=true;
+  }
+  if(step===0){
+    next();
+  }
+});
+
+cakeImg.onclick=()=>{
+  if(candlesBlown) return;
+  candlesBlown=true;
+
+  cakeImg.classList.add("blow");
+
+  for(let i=0;i<5;i++){
+    const s=document.createElement("div");
+    s.className="smoke";
+    smokeContainer.appendChild(s);
+    setTimeout(()=>s.remove(),2000);
+  }
+
+  startConfetti();
+  setTimeout(next,1200);
+};
+
+function next(){
+  pages[step].classList.add("hidden");
+  step++;
+  pages[step].classList.remove("hidden");
+
+  if(step===3){
+    setTimeout(typeText,2500);
+  }
+}
+
+/* Confetti */
+function startConfetti(){
+  setInterval(()=>{
+    const c=document.createElement("div");
+    c.className="confetti";
+    c.style.left=Math.random()*100+"vw";
+    c.style.animationDuration=(3+Math.random()*3)+"s";
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),6000);
+  },150);
+}
+
+/* Typing text */
+const text=[
+"I dont have words for you 😭",
+"You are an amazing friend ✨",
+"Loyal and trustworthy 🫂",
+"",
+"I never thought I would talk to you,",
+"but it turned out beautiful 🎀",
+"",
+"Thank you for understanding me…",
+"never leave me u r the only person",
+"in world i can trust most💖",
+"",
+" Love u Bro u r the best frnd ever💞"
+];
+
+let i=0;
+function typeText(){
+  if(i<text.length){
+    typingText.innerHTML+=
+      `<span class="${i>5?'handwriting':''}">${text[i]}</span><br>`;
+    i++;
+    setTimeout(typeText,450);
+  }
+}
+</script>
+
+</body>
+</html>
